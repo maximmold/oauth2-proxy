@@ -18,7 +18,6 @@ RUN openssl s_client -showcerts -connect sum.golang.org:443 </dev/null 2>/dev/nu
 RUN openssl s_client -showcerts -connect google.golang.org:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >  ${cert_location}/google.golang.crt
 RUN openssl s_client -showcerts -connect storage.googleapis.com:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >  ${cert_location}/storage.golang.crt
 
-RUN wget -A cer,crt,cert -P /usr/local/share/ca-certificates -nd -np -r --reject='index.html*' http://crl.pki.va.gov/PKI/AIA/VA/
 RUN update-ca-certificates
 
 # Fetch dependencies
