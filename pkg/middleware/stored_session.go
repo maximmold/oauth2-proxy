@@ -148,6 +148,7 @@ func (s *storedSessionLoader) refreshSession(rw http.ResponseWriter, req *http.R
 
 	// Session not refreshed, nothing to persist.
 	if !refreshed {
+	    logger.Printf("Not refreshed, nothing to persist")
 		return nil
 	}
 

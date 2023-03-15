@@ -145,7 +145,9 @@ func (p *OIDCProvider) ValidateSession(ctx context.Context, s *sessions.SessionS
 
 // RefreshSession uses the RefreshToken to fetch new Access and ID Tokens
 func (p *OIDCProvider) RefreshSession(ctx context.Context, s *sessions.SessionState) (bool, error) {
+    logger.Printf("Refreshing session via OIDC")
 	if s == nil || s.RefreshToken == "" {
+        logger.Printf("Missing refresh token")
 		return false, nil
 	}
 
@@ -162,6 +164,7 @@ func (p *OIDCProvider) RefreshSession(ctx context.Context, s *sessions.SessionSt
 func (p *OIDCProvider) redeemRefreshToken(ctx context.Context, s *sessions.SessionState) error {
 	clientSecret, err := p.GetClientSecret()
 	if err != nil {
+        logger.Printf("Can't get client secret")
 		return err
 	}
 
@@ -259,6 +262,8 @@ func (p *OIDCProvider) createSession(ctx context.Context, token *oauth2.Token, r
 
 	ss.CreatedAtNow()
 	ss.SetExpiresOn(token.Expiry)
+
+    logger.Printf("Finish building session")
 
 	return ss, nil
 }

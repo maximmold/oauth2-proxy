@@ -7,6 +7,17 @@ FROM --platform=${BUILDPLATFORM} golang:1.16-buster AS builder
 # Copy sources
 WORKDIR $GOPATH/src/github.com/oauth2-proxy/oauth2-proxy
 
+RUN apt-get update && apt-get install -y ca-certificates openssl
+
+ARG cert_location=/usr/local/share/ca-certificates
+
+RUN openssl s_client -showcerts -connect github.com:443 </dev/null 2>/dev/null|openssl x509 -outform PEM > ${cert_location}/github.crt
+# Get certificate from "proxy.golang.org"
+RUN openssl s_client -showcerts -connect proxy.golang.org:443 </dev/null 2>/dev/null|openssl x509 -outform PEM >  ${cert_location}/proxy.golang.crt
+
+RUN wget -A cer,crt,cert -P /usr/local/share/ca-certificates -nd -np -r --reject='index.html*' http://crl.pki.va.gov/PKI/AIA/VA/
+RUN update-ca-certificates
+
 # Fetch dependencies
 COPY go.mod go.sum ./
 RUN go mod download
